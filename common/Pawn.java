@@ -5,23 +5,9 @@ import java.util.*;
 public class Pawn implements Figure {
 	private boolean isWhite;
     private Field position;
-    private Stack<Field> positionHistory;
 
 	public Pawn(boolean isWhite) {
         this.isWhite = isWhite;
-        this.positionHistory = new Stack<Field>();
-    }
-
-    public void addToHistory() {
-        positionHistory.push(position);
-    }
-
-    public void undo() {
-        Field field = positionHistory.pop();
-        if (field != null) {
-            position.remove(this);
-            field.put(this); // TODO check return
-        }
     }
 
 	public boolean isWhite() {
@@ -38,6 +24,11 @@ public class Pawn implements Figure {
         int[] pos = position.getPosition();
 
         return "P[" + color + "]" + pos[0] + ":" + pos[1];
+    }
+
+    @Override
+    public Field getPosition() {
+        return position;
     }
 
     @Override

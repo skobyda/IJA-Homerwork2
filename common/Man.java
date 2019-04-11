@@ -1,27 +1,11 @@
 package ija.ija2018.homework2.common;
 
-import java.util.*;
-
 public class Man implements Figure {
 	private boolean isWhite;
     private Field position;
-    private Stack<Field> positionHistory;
 
 	public Man(boolean isWhite) {
         this.isWhite = isWhite;
-        this.positionHistory = new Stack<Field>();
-    }
-
-    public void addToHistory() {
-        positionHistory.push(position);
-    }
-
-    public void undo() {
-        Field field = positionHistory.pop();
-        if (field != null) {
-            position.remove(this);
-            field.put(this); // TODO check return
-        }
     }
 
 	public boolean isWhite() {
@@ -38,6 +22,11 @@ public class Man implements Figure {
         int[] pos = position.getPosition();
 
         return "P[" + color + "]" + pos[0] + ":" + pos[1];
+    }
+
+    @Override
+    public Field getPosition() {
+        return position;
     }
 
     @Override

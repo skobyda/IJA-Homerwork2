@@ -6,12 +6,14 @@ import java.util.*;
 public class Checkers implements Game {
     protected Board board;
     protected int size;
-    protected Stack<Figure> history;
+    protected Stack<Field> movedFrom;
+    protected Stack<Field> movedTo;
 
     public Checkers(Board board) {
         this.board = board;
         this.size = board.getSize(); 
-        this.history = new Stack<Figure>();
+        this.movedFrom = new Stack<Field>();
+        this.movedTo = new Stack<Field>();
 
         for (int i = 1; i <= size; i=i+2) {
             Man whiteMan = new Man(true);
@@ -34,19 +36,25 @@ public class Checkers implements Game {
     }
 
     @Override
-    public boolean move(Figure figure, Field field) {
-        if (figure.move(field)) {
-            history.push(figure);
-            return true;
-        } else {
-            return false;
-        }
+    public void undo() {
+        Field field1 = movedTo.pop();
+        Field field2 = movedFrom.pop();
+
+        field1.undo();
+        field2.undo();
     }
 
     @Override
-    public void undo() {
-        Figure figure = history.pop();
-        if (figure != null)
-            figure.undo();
+    public boolean move(Figure figure, Field field) {
+        // store old position
+        movedFrom.push(figure.getPosition());
+        if (figure.move(field)) {
+            // store new position
+            movedTo.push(figure.getPosition());
+            return true;
+        } else {
+            movedFrom.pop();
+            return false;
+        }
     }
 }

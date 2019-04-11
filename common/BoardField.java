@@ -1,5 +1,7 @@
 package ija.ija2018.homework2.common;
 
+import java.util.*; 
+
 public class BoardField implements Field {
 	protected int col;
 	protected int row;
@@ -13,15 +15,26 @@ public class BoardField implements Field {
 	protected Field RDfield;
 	protected Field RUfield;
 	protected Field Ufield;
+    protected Stack<Figure> history; 
 
 	public BoardField(int col, int row) {
         this.col = col;
         this.row = row;
+        this.history = new Stack<Figure>();
     }
 
 	public int[] getPosition() {
         int[] position = {row, col};
         return position;
+    }
+
+	public void undo() {
+        Figure figure = history.pop();
+        this.disk = figure;
+        if (figure != null) {
+            this.hasDisk = true;
+            figure.setPosition(this);
+        }
     }
 
 	public boolean put(Figure newdisk) {
@@ -30,12 +43,11 @@ public class BoardField implements Field {
                 return false;
             else
                 disk.setPosition(null);
-                disk.destroyed(hasDisk);
         }
 
+        history.push(disk);
         this.disk = newdisk;
         this.hasDisk = true;
-        disk.addToHistory();
         disk.setPosition(this);
         return true;
     }
@@ -55,6 +67,7 @@ public class BoardField implements Field {
         if (this.disk.equals(disk)) {
             this.disk = null;
             this.hasDisk = false;
+            history.push(disk);
             return true;
         }
         return false;

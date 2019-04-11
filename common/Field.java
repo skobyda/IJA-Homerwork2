@@ -12,6 +12,7 @@ public interface Field {
         U
     }
 
+	public void undo();
 	public int[] getPosition();
 	public boolean put(Figure figure);
 	public Figure get();

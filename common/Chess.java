@@ -1,14 +1,19 @@
 package ija.ija2018.homework2.common;
 
 import ija.ija2018.homework2.game.Board;
+import java.util.*;
 
 public class Chess implements Game {
     protected Board board;
     protected int size;
+    protected Stack<Field> movedFrom;
+    protected Stack<Field> movedTo;
 
     public Chess(Board board) {
         this.board = board;
         this.size = board.getSize(); 
+        this.movedFrom = new Stack<Field>();
+        this.movedTo = new Stack<Field>();
 
         for(int i = 1; i <= size; i++) {
             Pawn whitePawn = new Pawn(true);
@@ -36,12 +41,25 @@ public class Chess implements Game {
     }
 
     @Override
-    public boolean move(Figure figure, Field field) {
-        return figure.move(field);
+    public void undo() {
+        Field field1 = movedTo.pop();
+        Field field2 = movedFrom.pop();
+
+        field1.undo();
+        field2.undo();
     }
 
     @Override
-    public void undo() {
-        return;// TODO
+    public boolean move(Figure figure, Field field) {
+        // store old position
+        movedFrom.push(figure.getPosition());
+        if (figure.move(field)) {
+            // store new position
+            movedTo.push(field);
+            return true;
+        } else {
+            movedFrom.pop();
+            return false;
+        }
     }
 }
